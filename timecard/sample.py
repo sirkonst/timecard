@@ -37,14 +37,16 @@ def sample():
             sleep(0.01)
 
         with table.timeit():
-            for _ in xrange(randint(0, 100)):
+            for _ in range(randint(0, 100)):
                 _func()
 
         sleep(1)
         i += 1
-        if i == 5:
-            i = 0
+        if i % 5 == 0:
             table.write_line(fix=True)
+            if i % 50 == 0:
+                print('\n')
+                table.write_headers()
         else:
             table.write_line(fix=False)
 
@@ -53,4 +55,4 @@ if __name__ == "__main__":
     try:
         sample()
     except KeyboardInterrupt:
-        print "\n"
+        print("\n")

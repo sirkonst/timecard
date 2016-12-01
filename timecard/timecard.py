@@ -284,10 +284,10 @@ class AutoDeltaTime(DeltaTime):
 
 class _OrderedMetrics(OrderedDict):
 
-    def __setitem__(self, key, value, dict_setitem=dict.__setitem__):
+    def __setitem__(self, key, value):
         orig = lambda: \
             super(_OrderedMetrics, self).__setitem__(
-                key, value, dict_setitem=dict_setitem)
+                key, value)
 
         if value is isinstance(value, _MetricBase):
             return orig()
@@ -376,10 +376,11 @@ class TotalAndSec(MultiMetric):
     """
     type_total = Int
     type_persec = Float
+    value_type = int
 
     def __init__(self, title):
         super(TotalAndSec, self).__init__(title)
-        self._last_snap = 0
+        self._last_snap = None
         self._last_time = time()
 
         self.total = self.type_total("total")
@@ -395,6 +396,9 @@ class TotalAndSec(MultiMetric):
 
     @value.setter
     def value(self, value):
+        if self._last_snap is None:
+            self._last_snap = value
+
         self.total = value
 
     def __iadd__(self, value):
@@ -405,14 +409,12 @@ class TotalAndSec(MultiMetric):
 
     def calc(self):
         now = time()
-        if not self._last_time:
-            self._last_snap = self.total.value
-            self._last_time = now
-            return
-
         td = now - self._last_time
         if td < 0.9:
             return
+
+        if self._last_snap is None:
+            self._last_snap = 0
 
         delta = (self.total.value - self._last_snap) / td
         self._last_snap = self.total.value
@@ -515,7 +517,7 @@ class Timecard(_OrderedMetrics):
         self._last_line_fixed = False
 
     def _write_csv_row(self, values, rewrite=False):
-        mode = rewrite and "wb" or "ab"
+        mode = rewrite and "w" or "a"
         with open(self._csvfile, mode) as f:
             csv.writer(f).writerow(values)
 

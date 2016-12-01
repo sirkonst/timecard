@@ -2,9 +2,9 @@ from distutils.core import setup
 
 setup(
     name="Timecard",
-    version="1.0.1",
+    version="3.0.0",
     packages=["timecard"],
-    url="http://github.com/selectel/timecard",
+    url="https://github.com/sirkonst/timecard",
     license="MIT",
     author="Konstantin Enchant",
     author_email="sirkonst@gmail.com",
@@ -18,6 +18,7 @@ setup(
         "Natural Language :: Russian",
         "Operating System :: OS Independent",
         "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: 3",
         "Topic :: Software Development :: Libraries",
     ],
 )
